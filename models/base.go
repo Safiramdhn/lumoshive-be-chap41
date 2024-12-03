@@ -7,8 +7,8 @@ import (
 )
 
 type Base struct {
-	ID        int            `gorm:"primaryKey;autoIncrement" json:"id,omitempty"`
-	CreatedAt time.Time      `json:"-" gorm:"default:CURRENT_TIMESTAMP"`
-	UpdatedAt time.Time      `json:"-" gorm:"default:CURRENT_TIMESTAMP"`
-	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
+	ID        int            `gorm:"primaryKey;autoIncrement" json:"id,omitempty" swagger:"ignore"`
+	CreatedAt time.Time      `json:"-" gorm:"default:CURRENT_TIMESTAMP" swagger:"ignore"`
+	UpdatedAt time.Time      `json:"-" gorm:"default:CURRENT_TIMESTAMP" swagger:"ignore"`
+	DeletedAt gorm.DeletedAt `json:"-" gorm:"index" swagger:"ignore"`
 }

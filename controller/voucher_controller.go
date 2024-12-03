@@ -20,6 +20,16 @@ func NewVoucherController(service service.VoucherService, logger *zap.Logger) *V
 	return &VoucherController{service, logger}
 }
 
+// ValidateVoucherController godoc
+// @Summary Validate a voucher
+// @Description Validate the voucher with the provided voucher data
+// @Tags Voucher
+// @Accept json
+// @Produce json
+// @Param voucher body models.VoucherDTO true "Voucher DTO"
+// @Success 200 {object} models.VoucherDTO
+// @Failure 400 {object} utils.HTTPResponse
+// @Router /voucher/validate [get]
 func (ctrl *VoucherController) ValidateVoucherController(c *gin.Context) {
 	var voucherInput models.VoucherDTO
 	if err := c.ShouldBindJSON(&voucherInput); err != nil {
@@ -39,6 +49,16 @@ func (ctrl *VoucherController) ValidateVoucherController(c *gin.Context) {
 	utils.ResponseOK(c, validateResult, "Voucher data validated successfully")
 }
 
+// @Summary Create Voucher
+// @Description Create a new voucher
+// @Tags Voucher
+// @Accept json
+// @Produce json
+// @Param voucher body models.Voucher true "Voucher Data"
+// @Success 200 {object} utils.HTTPResponse "Voucher created successfully"
+// @Failure 400 {object} utils.HTTPResponse "Invalid input data"
+// @Failure 500 {object} utils.HTTPResponse "Internal server error"
+// @Router /voucher [post]
 func (ctrl *VoucherController) CreateVoucher(c *gin.Context) {
 	var voucher models.Voucher
 	var err error
@@ -73,6 +93,14 @@ func (ctrl *VoucherController) CreateVoucher(c *gin.Context) {
 	utils.ResponseOK(c, voucher, "Create voucher successfully")
 }
 
+// @Summary Delete Voucher
+// @Description Delete a voucher by ID
+// @Tags Voucher
+// @Param id path int true "Voucher ID"
+// @Success 200 {object} utils.HTTPResponse "Voucher deleted successfully"
+// @Failure 400 {object} utils.HTTPResponse "Invalid ID"
+// @Failure 404 {object} utils.HTTPResponse "Voucher not found"
+// @Router /voucher/{id} [delete]
 func (ctrl *VoucherController) DeleteVoucher(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -91,6 +119,16 @@ func (ctrl *VoucherController) DeleteVoucher(c *gin.Context) {
 	utils.ResponseOK(c, nil, "Voucher deleted successfully")
 }
 
+// @Summary Update Voucher
+// @Description Update an existing voucher
+// @Tags Voucher
+// @Accept json
+// @Produce json
+// @Param voucher body models.Voucher true "Voucher Data"
+// @Success 200 {object} utils.HTTPResponse "Voucher updated successfully"
+// @Failure 400 {object} utils.HTTPResponse "Invalid input data"
+// @Failure 500 {object} utils.HTTPResponse "Internal server error"
+// @Router /voucher [put]
 func (ctrl *VoucherController) UpdateVoucher(c *gin.Context) {
 	var voucher models.Voucher
 	if err := c.ShouldBindJSON(&voucher); err != nil {
@@ -109,6 +147,15 @@ func (ctrl *VoucherController) UpdateVoucher(c *gin.Context) {
 	utils.ResponseOK(c, voucher, "Voucher update successfully")
 }
 
+// @Summary Get Vouchers
+// @Description Retrieve vouchers with optional filters
+// @Tags Voucher
+// @Produce json
+// @Param voucher_code query string false "Filter by voucher code"
+// @Param voucher_type query string false "Filter by voucher type"
+// @Success 200 {array} models.VoucherWithStatus "List of vouchers"
+// @Failure 500 {object} utils.HTTPResponse "Internal server error"
+// @Router /vouchers [get]
 func (ctrl *VoucherController) GetVouchers(c *gin.Context) {
 	filter := make(map[string]interface{})
 	if c.Query("voucher_code") != "" {
@@ -137,6 +184,15 @@ func (ctrl *VoucherController) GetVouchers(c *gin.Context) {
 	utils.ResponseOK(c, response, "Get voucher successfully")
 }
 
+// @Summary Get Voucher by Minimum Rate Point
+// @Description Retrieve vouchers with a minimum rate point
+// @Tags Voucher
+// @Param ratePoint path int true "Minimum rate point"
+// @Success 200 {array} models.Voucher "List of vouchers"
+// @Failure 400 {object} utils.HTTPResponse "Invalid rate point"
+// @Failure 404 {object} utils.HTTPResponse "No vouchers found"
+// @Failure 500 {object} utils.HTTPResponse "Internal server error"
+// @Router /vouchers/min-rate/{ratePoint} [get]
 func (ctrl *VoucherController) GetVoucherWithMinRatePoint(c *gin.Context) {
 	ratePoint, err := strconv.Atoi(c.Param("ratePoint"))
 	if err != nil {
@@ -162,6 +218,14 @@ func (ctrl *VoucherController) GetVoucherWithMinRatePoint(c *gin.Context) {
 	utils.ResponseOK(c, vouchers, "Get vouchers successfully")
 }
 
+// @Summary Get Voucher Usage History
+// @Description Retrieve usage history of a voucher by its code
+// @Tags Voucher
+// @Param voucher_code path string true "Voucher Code"
+// @Success 200 {object} utils.HTTPResponse "Voucher usage history retrieved"
+// @Failure 400 {object} utils.HTTPResponse "Empty voucher code"
+// @Failure 500 {object} utils.HTTPResponse "Internal server error"
+// @Router /voucher/usage/{voucher_code} [get]
 func (ctrl *VoucherController) GetUsageHistoryController(c *gin.Context) {
 	voucherCode := c.Param("voucher_code")
 	if voucherCode == "" {

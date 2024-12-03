@@ -21,6 +21,18 @@ func NewRedeemController(service service.RedeemService, user service.UserService
 	return &RedeemController{service, user, logger}
 }
 
+// GetUserRedeemByTypeVoucherController godoc
+// @Summary Retrieve user redeems by voucher type
+// @Description Retrieves a list of redeem vouchers for a user filtered by voucher type.
+// @Tags Redeem
+// @Accept json
+// @Produce json
+// @Param user_id path int true "User ID"
+// @Param voucher_type path string true "Voucher type (e.g., discount, cashback)"
+// @Success 200 {object} map[string]interface{} "List of active redeems and success message"
+// @Failure 400 {object} map[string]interface{} "Invalid parameters or missing voucher type"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /redeems/{user_id}/{voucher_type} [get]
 func (ctrl *RedeemController) GetUserRedeemByTypeVoucherController(c *gin.Context) {
 	userID, err := strconv.Atoi(c.Param("user_id"))
 	if err != nil {
@@ -59,6 +71,19 @@ func (ctrl *RedeemController) GetUserRedeemByTypeVoucherController(c *gin.Contex
 	})
 }
 
+// RedeemVoucher godoc
+// @Summary Redeem a voucher
+// @Description Allows a user to redeem a specific voucher using their points.
+// @Tags Redeem
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param voucher_id path int true "Voucher ID"
+// @Success 200 {object} map[string]interface{} "Redeem details and success message"
+// @Failure 400 {object} map[string]interface{} "Invalid parameters"
+// @Failure 404 {object} map[string]interface{} "User or voucher not found"
+// @Failure 500 {object} map[string]interface{} "Internal server error or redeem failure"
+// @Router /redeem/user/{id}/{voucher_id} [post]
 func (ctrl *RedeemController) RedeemVoucher(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

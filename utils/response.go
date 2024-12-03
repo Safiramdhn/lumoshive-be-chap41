@@ -6,11 +6,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// HTTPResponse defines the structure for standard API responses
 type HTTPResponse struct {
-	Success     bool        `json:"success"`
-	ErrorCode   string      `json:"error_code,omitempty"`
-	Description string      `json:"description,omitempty"`
-	Data        interface{} `json:"data,omitempty"`
+	Success     bool        `json:"success" example:"true"`
+	ErrorCode   string      `json:"error_code,omitempty" example:"ERR123"`
+	Description string      `json:"description,omitempty" example:"Operation successful"`
+	Data        interface{} `json:"data,omitempty" swaggertype:"object"` // Use swaggertype for unsupported types
 }
 
 func ResponseOK(c *gin.Context, data interface{}, description string) {

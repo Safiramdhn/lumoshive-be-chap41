@@ -19,6 +19,18 @@ func NewUserController(service service.UserService, logger *zap.Logger) *UserCon
 	return &UserController{service, logger}
 }
 
+// GetUserRedeemController godoc
+// @Summary Retrieve a list of redeems for a specific user
+// @Description Retrieves the redeem data for a given user by their ID.
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} []models.Redeem "List of user redeems and success message"
+// @Failure 400 {object} map[string]interface{} "Invalid user ID"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /user/redeem/{id} [get]
+
 func (ctrl *UserController) GetUserRedeemController(c *gin.Context) {
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -36,6 +48,17 @@ func (ctrl *UserController) GetUserRedeemController(c *gin.Context) {
 	utils.ResponseOK(c, userRedeems, "user redeem retrieved successfully")
 }
 
+// GetUserUsageController godoc
+// @Summary Retrieve a list of usage data for a specific user
+// @Description Retrieves the usage data for a given user by their ID.
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} []models.Usage "List of user usage and success message"
+// @Failure 400 {object} map[string]interface{} "Invalid user ID"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /user/usage/{id} [get]
 func (ctrl *UserController) GetUserUsageController(c *gin.Context) {
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

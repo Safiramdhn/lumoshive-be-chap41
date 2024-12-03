@@ -21,6 +21,18 @@ func NewUsageController(service service.UsageService, logger *zap.Logger) *Usage
 	return &UsageController{service, logger}
 }
 
+// CreateUsageController godoc
+// @Summary Create a usage record for a voucher
+// @Description Allows a user to create a usage record by providing the necessary input data.
+// @Tags Usage
+// @Accept json
+// @Produce json
+// @Param usage body models.UsageDTO true "Usage input data"
+// @Success 200 {object} map[string]interface{} "Success message"
+// @Failure 400 {object} map[string]interface{} "Invalid input data or bad request"
+// @Failure 500 {object} map[string]interface{} "Internal server error during processing"
+// @Router /usage [post]
+
 func (ctrl *UsageController) CreateUsageController(c *gin.Context) {
 	var usageInput models.UsageDTO
 

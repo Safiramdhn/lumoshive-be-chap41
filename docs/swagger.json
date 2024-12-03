@@ -1,0 +1,808 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "API for interacting with voucher",
+        "title": "Voucher API",
+        "termsOfService": "http://example.com/terms/",
+        "contact": {
+            "name": "Lumoshive Support",
+            "url": "https://academy.lumoshive.com/contact-us",
+            "email": "safiramadhani9@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/redeem/user/{id}/{voucher_id}": {
+            "post": {
+                "description": "Allows a user to redeem a specific voucher using their points.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Redeem"
+                ],
+                "summary": "Redeem a voucher",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Voucher ID",
+                        "name": "voucher_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Redeem details and success message",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "User or voucher not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error or redeem failure",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/redeems/{user_id}/{voucher_type}": {
+            "get": {
+                "description": "Retrieves a list of redeem vouchers for a user filtered by voucher type.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Redeem"
+                ],
+                "summary": "Retrieve user redeems by voucher type",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Voucher type (e.g., discount, cashback)",
+                        "name": "voucher_type",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of active redeems and success message",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters or missing voucher type",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/user/usage/{id}": {
+            "get": {
+                "description": "Retrieves the usage data for a given user by their ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Retrieve a list of usage data for a specific user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of user usage and success message",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Usage"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid user ID",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/voucher": {
+            "put": {
+                "description": "Update an existing voucher",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Voucher"
+                ],
+                "summary": "Update Voucher",
+                "parameters": [
+                    {
+                        "description": "Voucher Data",
+                        "name": "voucher",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Voucher"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Voucher updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new voucher",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Voucher"
+                ],
+                "summary": "Create Voucher",
+                "parameters": [
+                    {
+                        "description": "Voucher Data",
+                        "name": "voucher",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Voucher"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Voucher created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/voucher/usage/{voucher_code}": {
+            "get": {
+                "description": "Retrieve usage history of a voucher by its code",
+                "tags": [
+                    "Voucher"
+                ],
+                "summary": "Get Voucher Usage History",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Voucher Code",
+                        "name": "voucher_code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Voucher usage history retrieved",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Empty voucher code",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/voucher/validate": {
+            "get": {
+                "description": "Validate the voucher with the provided voucher data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Voucher"
+                ],
+                "summary": "Validate a voucher",
+                "parameters": [
+                    {
+                        "description": "Voucher DTO",
+                        "name": "voucher",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.VoucherDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.VoucherDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/voucher/{id}": {
+            "delete": {
+                "description": "Delete a voucher by ID",
+                "tags": [
+                    "Voucher"
+                ],
+                "summary": "Delete Voucher",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Voucher ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Voucher deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Voucher not found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/vouchers": {
+            "get": {
+                "description": "Retrieve vouchers with optional filters",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Voucher"
+                ],
+                "summary": "Get Vouchers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by voucher code",
+                        "name": "voucher_code",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by voucher type",
+                        "name": "voucher_type",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of vouchers",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.VoucherWithStatus"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/vouchers/min-rate/{ratePoint}": {
+            "get": {
+                "description": "Retrieve vouchers with a minimum rate point",
+                "tags": [
+                    "Voucher"
+                ],
+                "summary": "Get Voucher by Minimum Rate Point",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Minimum rate point",
+                        "name": "ratePoint",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of vouchers",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Voucher"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid rate point",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "No vouchers found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Redeem": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "redeem_date": {
+                    "type": "string",
+                    "example": "2024-12-03T12:00:00Z"
+                },
+                "user": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "voucher": {
+                    "description": "Relationships",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Voucher"
+                        }
+                    ]
+                },
+                "voucher_code": {
+                    "type": "string",
+                    "example": "VCHR2024"
+                }
+            }
+        },
+        "models.Usage": {
+            "type": "object",
+            "properties": {
+                "benefit_amount": {
+                    "type": "number",
+                    "example": 10
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "transaction_amount": {
+                    "type": "number",
+                    "example": 100.5
+                },
+                "usage_date": {
+                    "type": "string",
+                    "example": "2024-12-03T12:00:00Z"
+                },
+                "user": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "voucher": {
+                    "description": "Relationships",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Voucher"
+                        }
+                    ]
+                },
+                "voucher_code": {
+                    "type": "string",
+                    "example": "VCHR2024"
+                }
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2024-12-03T12:00:00Z"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "john.doe@example.com"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "points": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "redeems": {
+                    "description": "Relationships",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Redeem"
+                    }
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2024-12-03T12:30:00Z"
+                },
+                "usages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Usage"
+                    }
+                }
+            }
+        },
+        "models.Voucher": {
+            "type": "object",
+            "properties": {
+                "applicable_areas": {
+                    "type": "string",
+                    "example": "[\"Jakarta\", \"Bandung\"]"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "10% off on all purchases"
+                },
+                "discount_amount": {
+                    "type": "number",
+                    "example": 10.5
+                },
+                "end_date": {
+                    "type": "string",
+                    "example": "2024-12-31"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "min_purchase": {
+                    "type": "number",
+                    "example": 100
+                },
+                "min_rate_point": {
+                    "type": "integer",
+                    "example": 50
+                },
+                "payment_method": {
+                    "type": "string",
+                    "example": "Credit Card"
+                },
+                "quantity": {
+                    "type": "integer",
+                    "example": 500
+                },
+                "redeems": {
+                    "description": "Relationships",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Redeem"
+                    }
+                },
+                "start_date": {
+                    "type": "string",
+                    "example": "2024-12-01"
+                },
+                "usages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Usage"
+                    }
+                },
+                "voucher_category": {
+                    "type": "string",
+                    "example": "Seasonal"
+                },
+                "voucher_code": {
+                    "type": "string",
+                    "example": "HOLIDAY2024"
+                },
+                "voucher_name": {
+                    "description": "Example included",
+                    "type": "string",
+                    "example": "Holiday Discount"
+                },
+                "voucher_type": {
+                    "type": "string",
+                    "example": "Percentage"
+                }
+            }
+        },
+        "models.VoucherDTO": {
+            "type": "object",
+            "properties": {
+                "area": {
+                    "type": "string",
+                    "example": "Jakarta"
+                },
+                "payment_method": {
+                    "type": "string",
+                    "example": "Credit Card"
+                },
+                "total_shipping_cost": {
+                    "type": "number",
+                    "example": 10
+                },
+                "total_transactions": {
+                    "type": "number",
+                    "example": 200
+                },
+                "transaction_date": {
+                    "type": "string",
+                    "example": "2024-12-03"
+                },
+                "voucher_code": {
+                    "type": "string",
+                    "example": "HOLIDAY2024"
+                }
+            }
+        },
+        "models.VoucherWithStatus": {
+            "type": "object",
+            "properties": {
+                "applicable_areas": {
+                    "type": "string",
+                    "example": "[\"Jakarta\", \"Bandung\"]"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "10% off on all purchases"
+                },
+                "discount_amount": {
+                    "type": "number",
+                    "example": 10.5
+                },
+                "end_date": {
+                    "type": "string",
+                    "example": "2024-12-31"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "min_purchase": {
+                    "type": "number",
+                    "example": 100
+                },
+                "min_rate_point": {
+                    "type": "integer",
+                    "example": 50
+                },
+                "payment_method": {
+                    "type": "string",
+                    "example": "Credit Card"
+                },
+                "quantity": {
+                    "type": "integer",
+                    "example": 500
+                },
+                "redeems": {
+                    "description": "Relationships",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Redeem"
+                    }
+                },
+                "start_date": {
+                    "type": "string",
+                    "example": "2024-12-01"
+                },
+                "usages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Usage"
+                    }
+                },
+                "voucher_category": {
+                    "type": "string",
+                    "example": "Seasonal"
+                },
+                "voucher_code": {
+                    "type": "string",
+                    "example": "HOLIDAY2024"
+                },
+                "voucher_name": {
+                    "description": "Example included",
+                    "type": "string",
+                    "example": "Holiday Discount"
+                },
+                "voucher_type": {
+                    "type": "string",
+                    "example": "Percentage"
+                }
+            }
+        },
+        "utils.HTTPResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "Use swaggertype for unsupported types",
+                    "type": "object"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Operation successful"
+                },
+                "error_code": {
+                    "type": "string",
+                    "example": "ERR123"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

@@ -4,21 +4,22 @@ import (
 	"lumoshive-be-chap41/infra"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func NewRoutes(ctx infra.ServiceContext) *gin.Engine {
 	r := gin.Default()
 
-	// r.POST("/users", ctx.Ctl.User.CreateUser)
-	// r.GET("/users/:id", ctx.Ctl.User.GetUser)
-	// r.PUT("/users/:id", ctx.Ctl.User.UpdateUser)
-	// r.DELETE("/users/:id", ctx.Ctl.User.DeleteUser)
+	// Swagger endpoint
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	r.GET("/login", ctx.Ctl.Auth.Login)
+	// Add other routes
 	redeemRoutes(r, ctx)
 	voucherRouter(r, ctx)
 	usageRouter(r, ctx)
 	userRouter(r, ctx)
+
 	return r
 }
 

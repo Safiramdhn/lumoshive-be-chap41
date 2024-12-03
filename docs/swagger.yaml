@@ -1,0 +1,554 @@
+basePath: /
+definitions:
+  models.Redeem:
+    properties:
+      id:
+        type: integer
+      redeem_date:
+        example: "2024-12-03T12:00:00Z"
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        example: 1
+        type: integer
+      voucher:
+        allOf:
+        - $ref: '#/definitions/models.Voucher'
+        description: Relationships
+      voucher_code:
+        example: VCHR2024
+        type: string
+    type: object
+  models.Usage:
+    properties:
+      benefit_amount:
+        example: 10
+        type: number
+      id:
+        type: integer
+      transaction_amount:
+        example: 100.5
+        type: number
+      usage_date:
+        example: "2024-12-03T12:00:00Z"
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        example: 1
+        type: integer
+      voucher:
+        allOf:
+        - $ref: '#/definitions/models.Voucher'
+        description: Relationships
+      voucher_code:
+        example: VCHR2024
+        type: string
+    type: object
+  models.User:
+    properties:
+      created_at:
+        example: "2024-12-03T12:00:00Z"
+        type: string
+      email:
+        example: john.doe@example.com
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: John Doe
+        type: string
+      points:
+        example: 100
+        type: integer
+      redeems:
+        description: Relationships
+        items:
+          $ref: '#/definitions/models.Redeem'
+        type: array
+      updated_at:
+        example: "2024-12-03T12:30:00Z"
+        type: string
+      usages:
+        items:
+          $ref: '#/definitions/models.Usage'
+        type: array
+    type: object
+  models.Voucher:
+    properties:
+      applicable_areas:
+        example: '["Jakarta", "Bandung"]'
+        type: string
+      description:
+        example: 10% off on all purchases
+        type: string
+      discount_amount:
+        example: 10.5
+        type: number
+      end_date:
+        example: "2024-12-31"
+        type: string
+      id:
+        type: integer
+      min_purchase:
+        example: 100
+        type: number
+      min_rate_point:
+        example: 50
+        type: integer
+      payment_method:
+        example: Credit Card
+        type: string
+      quantity:
+        example: 500
+        type: integer
+      redeems:
+        description: Relationships
+        items:
+          $ref: '#/definitions/models.Redeem'
+        type: array
+      start_date:
+        example: "2024-12-01"
+        type: string
+      usages:
+        items:
+          $ref: '#/definitions/models.Usage'
+        type: array
+      voucher_category:
+        example: Seasonal
+        type: string
+      voucher_code:
+        example: HOLIDAY2024
+        type: string
+      voucher_name:
+        description: Example included
+        example: Holiday Discount
+        type: string
+      voucher_type:
+        example: Percentage
+        type: string
+    type: object
+  models.VoucherDTO:
+    properties:
+      area:
+        example: Jakarta
+        type: string
+      payment_method:
+        example: Credit Card
+        type: string
+      total_shipping_cost:
+        example: 10
+        type: number
+      total_transactions:
+        example: 200
+        type: number
+      transaction_date:
+        example: "2024-12-03"
+        type: string
+      voucher_code:
+        example: HOLIDAY2024
+        type: string
+    type: object
+  models.VoucherWithStatus:
+    properties:
+      applicable_areas:
+        example: '["Jakarta", "Bandung"]'
+        type: string
+      description:
+        example: 10% off on all purchases
+        type: string
+      discount_amount:
+        example: 10.5
+        type: number
+      end_date:
+        example: "2024-12-31"
+        type: string
+      id:
+        type: integer
+      is_active:
+        example: true
+        type: boolean
+      min_purchase:
+        example: 100
+        type: number
+      min_rate_point:
+        example: 50
+        type: integer
+      payment_method:
+        example: Credit Card
+        type: string
+      quantity:
+        example: 500
+        type: integer
+      redeems:
+        description: Relationships
+        items:
+          $ref: '#/definitions/models.Redeem'
+        type: array
+      start_date:
+        example: "2024-12-01"
+        type: string
+      usages:
+        items:
+          $ref: '#/definitions/models.Usage'
+        type: array
+      voucher_category:
+        example: Seasonal
+        type: string
+      voucher_code:
+        example: HOLIDAY2024
+        type: string
+      voucher_name:
+        description: Example included
+        example: Holiday Discount
+        type: string
+      voucher_type:
+        example: Percentage
+        type: string
+    type: object
+  utils.HTTPResponse:
+    properties:
+      data:
+        description: Use swaggertype for unsupported types
+        type: object
+      description:
+        example: Operation successful
+        type: string
+      error_code:
+        example: ERR123
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: safiramadhani9@gmail.com
+    name: Lumoshive Support
+    url: https://academy.lumoshive.com/contact-us
+  description: API for interacting with voucher
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://example.com/terms/
+  title: Voucher API
+  version: "1.0"
+paths:
+  /redeem/user/{id}/{voucher_id}:
+    post:
+      consumes:
+      - application/json
+      description: Allows a user to redeem a specific voucher using their points.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Voucher ID
+        in: path
+        name: voucher_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Redeem details and success message
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid parameters
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: User or voucher not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error or redeem failure
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Redeem a voucher
+      tags:
+      - Redeem
+  /redeems/{user_id}/{voucher_type}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of redeem vouchers for a user filtered by voucher
+        type.
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: Voucher type (e.g., discount, cashback)
+        in: path
+        name: voucher_type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of active redeems and success message
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid parameters or missing voucher type
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Retrieve user redeems by voucher type
+      tags:
+      - Redeem
+  /user/usage/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the usage data for a given user by their ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of user usage and success message
+          schema:
+            items:
+              $ref: '#/definitions/models.Usage'
+            type: array
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Retrieve a list of usage data for a specific user
+      tags:
+      - User
+  /voucher:
+    post:
+      consumes:
+      - application/json
+      description: Create a new voucher
+      parameters:
+      - description: Voucher Data
+        in: body
+        name: voucher
+        required: true
+        schema:
+          $ref: '#/definitions/models.Voucher'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Voucher created successfully
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+        "400":
+          description: Invalid input data
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+      summary: Create Voucher
+      tags:
+      - Voucher
+    put:
+      consumes:
+      - application/json
+      description: Update an existing voucher
+      parameters:
+      - description: Voucher Data
+        in: body
+        name: voucher
+        required: true
+        schema:
+          $ref: '#/definitions/models.Voucher'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Voucher updated successfully
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+        "400":
+          description: Invalid input data
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+      summary: Update Voucher
+      tags:
+      - Voucher
+  /voucher/{id}:
+    delete:
+      description: Delete a voucher by ID
+      parameters:
+      - description: Voucher ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Voucher deleted successfully
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+        "404":
+          description: Voucher not found
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+      summary: Delete Voucher
+      tags:
+      - Voucher
+  /voucher/usage/{voucher_code}:
+    get:
+      description: Retrieve usage history of a voucher by its code
+      parameters:
+      - description: Voucher Code
+        in: path
+        name: voucher_code
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Voucher usage history retrieved
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+        "400":
+          description: Empty voucher code
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+      summary: Get Voucher Usage History
+      tags:
+      - Voucher
+  /voucher/validate:
+    get:
+      consumes:
+      - application/json
+      description: Validate the voucher with the provided voucher data
+      parameters:
+      - description: Voucher DTO
+        in: body
+        name: voucher
+        required: true
+        schema:
+          $ref: '#/definitions/models.VoucherDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.VoucherDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+      summary: Validate a voucher
+      tags:
+      - Voucher
+  /vouchers:
+    get:
+      description: Retrieve vouchers with optional filters
+      parameters:
+      - description: Filter by voucher code
+        in: query
+        name: voucher_code
+        type: string
+      - description: Filter by voucher type
+        in: query
+        name: voucher_type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of vouchers
+          schema:
+            items:
+              $ref: '#/definitions/models.VoucherWithStatus'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+      summary: Get Vouchers
+      tags:
+      - Voucher
+  /vouchers/min-rate/{ratePoint}:
+    get:
+      description: Retrieve vouchers with a minimum rate point
+      parameters:
+      - description: Minimum rate point
+        in: path
+        name: ratePoint
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: List of vouchers
+          schema:
+            items:
+              $ref: '#/definitions/models.Voucher'
+            type: array
+        "400":
+          description: Invalid rate point
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+        "404":
+          description: No vouchers found
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.HTTPResponse'
+      summary: Get Voucher by Minimum Rate Point
+      tags:
+      - Voucher
+schemes:
+- http
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
