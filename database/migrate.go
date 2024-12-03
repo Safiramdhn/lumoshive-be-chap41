@@ -40,6 +40,7 @@ func Migrate(db *gorm.DB) error {
 		{"redeem", models.Redeem{}},
 		{"usage", models.Usage{}},
 		{"user", models.User{}},
+		{"admin", models.Admin{}},
 	}
 
 	for _, migration := range models {

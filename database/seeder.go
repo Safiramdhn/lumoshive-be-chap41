@@ -10,6 +10,11 @@ import (
 )
 
 func SeedDatabase(db *gorm.DB) error {
+	log.Println("Starting admin seeding...")
+	if err := adminSeeder(db); err != nil {
+		return fmt.Errorf("admin seeding failed: %w", err)
+	}
+
 	log.Println("Starting user seeding...")
 	if err := seedUsers(db); err != nil {
 		return fmt.Errorf("user seeding failed: %w", err)
@@ -155,5 +160,27 @@ func seedUsers(db *gorm.DB) error {
 		return fmt.Errorf("error seeding users: %w", err)
 	}
 
+	return nil
+}
+
+func adminSeeder(db *gorm.DB) error {
+	var count int64
+	if err := db.Model(&models.Admin{}).Count(&count).Error; err != nil {
+		return fmt.Errorf("failed to check existing users: %w", err)
+	}
+
+	if count > 0 {
+		log.Println("Users already exist, skipping seed.")
+		return nil
+	}
+
+	admin := models.Admin{
+		Username: "admin",
+		Password: "password123",
+	}
+
+	if err := db.Create(&admin).Error; err != nil {
+		return fmt.Errorf("error seeding admin: %w", err)
+	}
 	return nil
 }

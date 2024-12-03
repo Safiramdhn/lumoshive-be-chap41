@@ -5,6 +5,7 @@ import (
 	"lumoshive-be-chap41/controller"
 	"lumoshive-be-chap41/database"
 	"lumoshive-be-chap41/log"
+	"lumoshive-be-chap41/middleware"
 	"lumoshive-be-chap41/repository"
 	"lumoshive-be-chap41/service"
 
@@ -12,9 +13,11 @@ import (
 )
 
 type ServiceContext struct {
-	Cfg config.Config
-	Ctl controller.Controller
-	Log *zap.Logger
+	Cfg        config.Config
+	Ctl        controller.Controller
+	Log        *zap.Logger
+	Cacher     database.Cacher
+	Middleware middleware.Middleware
 }
 
 func NewServiceContext() (*ServiceContext, error) {
@@ -41,6 +44,8 @@ func NewServiceContext() (*ServiceContext, error) {
 		handlerError(err)
 	}
 
+	rdb := database.NewCacher(config, 60*60)
+
 	// instance repository
 	repository := repository.NewRepository(db)
 
@@ -48,7 +53,9 @@ func NewServiceContext() (*ServiceContext, error) {
 	service := service.NewService(repository)
 
 	// instance controller
-	Ctl := controller.NewController(service, log)
+	Ctl := controller.NewController(service, log, rdb)
 
-	return &ServiceContext{Cfg: config, Ctl: *Ctl, Log: log}, nil
+	middleware := middleware.NewMiddleware(rdb)
+
+	return &ServiceContext{Cfg: config, Ctl: *Ctl, Log: log, Cacher: rdb, Middleware: middleware}, nil
 }
